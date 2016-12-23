@@ -19,12 +19,37 @@ def gradAscent(dataMatIn, classLabels) :
     labelMat = mat(classLabels).transpose()
     m, n = shape(dataMatrix)
     alpha = 0.001
-    maxCycles = 500
+    maxCycles = 3
     weights = ones((n, 1))
     # heavy on matrix operations
     for k in range(maxCycles) :
+        mult = dataMatrix * weights
+        print "\nmult", mult
         # matrix mult
-        h = sigmoid(dataMatrix * weights)
+        h = sigmoid(mult)
+        # matrix subtraction
+        error = (labelMat - h)
+        # matrix mult
+        weights = weights + alpha * dataMatrix.transpose() * error
+    return weights
+
+def gradAscent2(dataMatIn, classLabels) :
+    maxCycles = 20
+    rMult = []
+    rH = []
+    rError = []
+    rWeights = []    
+    # convert to NumPy matrix
+    dataMatrix = mat(dataMatIn)
+    labelMat = mat(classLabels).transpose()
+    m, n = shape(dataMatrix)
+    alpha = 0.001
+    weights = ones((n, 1))
+    # heavy on matrix operations
+    for k in range(maxCycles) :
+        mult = dataMatrix * weights
+        # matrix mult
+        h = sigmoid(mult)
         # matrix subtraction
         error = (labelMat - h)
         # matrix mult
@@ -59,7 +84,7 @@ def plotBestFit(weights) :
 
 def test() :
     dataMat,labelMat = loadDataSet()
-    weights = gradAscent(dataMat,labelMat)
+    weights = gradAscent2(dataMat,labelMat)
     plotBestFit(weights.getA())
 
 test()
